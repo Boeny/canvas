@@ -1,34 +1,6 @@
 import Canvas from './canvas';
 import Controls from './controls';
 
-function obj_key(obj, i = 0){
-	return Object.keys(obj)[i];
-}
-
-Canvas.createObjects = function(models){
-	if (!models) return;
-	
-	var objects = {};
-	
-	if (models instanceof Array){
-		for (var i = 0; i < models.length; i++)
-		{
-			let obj = models[i];// {className: class}
-			let className = obj_key(obj);
-			objects[className.toLowerCase()] = new obj[className]();
-		}
-	}
-	else{
-		for (var name in models)
-		{
-			let obj = models[name];// {className: class}
-			objects[name] = new obj[obj_key(obj)]();
-		}
-	}
-	
-	return objects;
-};
-
 /**
  * @prop {Object} objects {name1: {}, name2: ...}
  * @prop {boolean} useDecart - if use decart system with (0,0) in the middle of the screen
@@ -74,14 +46,11 @@ Canvas.setObjectsEnv = function(objects, useDecart, multiplier, updates){
 };
 
 /**
- * @prop {Array/Object} models [ {className: class}, ... ] or {name1: {className: class}, name2: ...}
+ * @prop {Object} objects {name1: object1, name2: ...}
  * @prop {Number} multiplier of the size of the canvas
  * @prop {boolean} useDecart - if use decart system with (0,0) in the middle of the screen
  */
-Canvas.ready = function(models, multiplier, useDecart){
-	// create objects from the classes
-	var objects = Canvas.createObjects(models);
-	
+Canvas.ready = function(objects, multiplier, useDecart){
 	global.onload = function(){
 		// add renderer and controls as components of the objects
 		var updates = [];
