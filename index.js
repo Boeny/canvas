@@ -29,11 +29,20 @@ Canvas.createObjects = function(models){
 	return objects;
 };
 
+/**
+ * @prop {Object} objects {name1: {}, name2: ...}
+ * @prop {boolean} useDecart - if use decart system with (0,0) in the middle of the screen
+ * @prop {Number} multiplier of the size of the canvas
+ * @prop {Array/undefined} updates will be filled with the "Update" or "render" methods of each object or both
+ *                                 if not set, the objects won't be rendered (and canvas will not be added)
+ * 
+ * @returns {renderer, controls}
+ */
 Canvas.setObjectsEnv = function(objects, useDecart, multiplier, updates){
 	var renderer = new Canvas(multiplier, !!updates);
-	if (useDecart) renderer.useDecart = true;
-	
 	var controls = new Controls(renderer);
+	
+	if (useDecart) renderer.useDecart = true;
 	
 	for (var name in objects){
 		let obj = objects[name];
@@ -42,6 +51,7 @@ Canvas.setObjectsEnv = function(objects, useDecart, multiplier, updates){
 		
 		if (obj.Start) obj.Start(objects);
 		
+		// if there is not updates array
 		if (updates && (obj.render || obj.Update)){
 			let upd;
 			
@@ -64,19 +74,23 @@ Canvas.setObjectsEnv = function(objects, useDecart, multiplier, updates){
 };
 
 /**
- * @prop {Array} models [ {className: class}, ... ]
+ * @prop {Array/Object} models [ {className: class}, ... ] or {name1: {className: class}, name2: ...}
  * @prop {Number} multiplier of the size of the canvas
- * @prop {boolean} if use decart system with (0,0) in the middle of the screen
+ * @prop {boolean} useDecart - if use decart system with (0,0) in the middle of the screen
  */
 Canvas.ready = function(models, multiplier, useDecart){
+	// create objects from the classes
 	var objects = Canvas.createObjects(models);
 	
 	global.onload = function(){
+		// add renderer and controls as components of the objects
 		var updates = [];
 		var {renderer, controls} = Canvas.setObjectsEnv(objects, useDecart, multiplier, updates);
 		
+		// bind mouse, keys and touch events to the objects
 		controls.Bind(objects);
 		
+		// main cycle
 		(function render(){
 			requestAnimationFrame(render);
 			renderer.clear();
