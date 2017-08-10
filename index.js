@@ -2,7 +2,7 @@ import Canvas from './canvas';
 import Controls from './controls';
 
 /**
- * @prop {Object} objects {name1: {}, name2: ...}
+ * @prop {Object} objects {name1: object1, name2: ...}
  * @prop {boolean} useDecart - if use decart system with (0,0) in the middle of the screen
  * @prop {Number} multiplier of the size of the canvas
  * @prop {Array/undefined} updates will be filled with the "Update" or "render" methods of each object or both
